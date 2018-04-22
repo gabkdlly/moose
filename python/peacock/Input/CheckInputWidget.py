@@ -54,6 +54,7 @@ class CheckInputWidget(QWidget, MooseWidget):
         """
         self.path = path
         self._check()
+        self.problems_with_input_file()
 
     def _check(self):
         """
@@ -71,3 +72,30 @@ class CheckInputWidget(QWidget, MooseWidget):
             output_html = TerminalUtils.terminalOutputToHtml(str(e))
             self.output.setHtml("<pre>%s</pre>" % output_html)
         self.cleanup()
+
+    def problems_with_input_file(self):
+        data = str(self.output.toPlainText())
+        data = data.splitlines()
+        errors = []
+        while data:
+            error = {}
+            header = data.pop(0)
+            if not header == '*** ERROR ***':
+                continue
+            prefix = 'Range check failed for parameter '
+            if not data[0].startswith(prefix):
+                continue
+            param_name = data.pop(0)
+            param_name = param_name.replace(prefix, '')
+            prefix = '\tExpression: '
+            if not data[0].startswith(prefix):
+                continue
+            check_expression = data.pop(0)
+            check_expression = check_expression.replace(prefix, '')
+            error['param_name'] = param_name
+            error['expression'] = check_expression
+            errors.append(error)
+        print(errors)
+
+    def warnings(self):
+        pass

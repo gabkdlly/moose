@@ -457,6 +457,11 @@ class ParamsTable(QtWidgets.QTableWidget, MooseWidget):
             else:
                 name_item.setToolTip(param.toolTip())
 
+            if True:
+                color = QColor("red")
+                brush = QBrush(color)
+                value_item.setForeground(brush)
+
             self.setItem(row, 1, value_item)
 
         comments_item = QtWidgets.QTableWidgetItem(param.comments)
